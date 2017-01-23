@@ -1,5 +1,4 @@
 <?php
-use \Model\FinderInterface;
 
 namespace Model;
 

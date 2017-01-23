@@ -48,4 +48,8 @@ class Request
 	{
 		return $this->parameters[$name];
 	}
+
+	public function guessBestFormat(){
+
+    }
 }

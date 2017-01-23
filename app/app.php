@@ -1,9 +1,9 @@
 <?php
 
-require __DIR__ . '/../autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use Model\JsonFinder;
-use Model\JsonWriter;
+use Model\JsonModifier;
 use Http\Request;
 use Exception\HttpException;
 
@@ -25,7 +25,7 @@ $app->get('/statuses', function (Request $request) use ($app) {
 
 $app->get('/statuses/(\d+)', function(Request $request, $id) use ($app) {
 	$finder = new JsonFinder();
-	$status = $finder->findOneById($id - 1);
+	$status = $finder->findOneById($id);
 	if ($status != null) {	
     	return $app->render('status.php', ["status" => $status]);
 	}
@@ -33,10 +33,21 @@ $app->get('/statuses/(\d+)', function(Request $request, $id) use ($app) {
 	
 });
 
-$app->post('/statuses', function () use ($app) {
-	$finder = new JsonWriter();
-	$finder->write("coucou");
-    return ;
+$app->post('/statuses', function (Request $request) use ($app) {
+	$writer = new JsonModifier();
+	$writer->write($request->getParameter("message"));
+    $app->redirect('/statuses');
 });
 
+$app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app) {
+
+    $finder = new JsonFinder();
+    $status = $finder->findOneById($id);
+    if($status == null){
+        throw new HttpException(404, "Status not found");
+    }
+    $writer = new JsonModifier();
+    $writer->delete($id);
+    $app->redirect('/statuses');
+});
 return $app;

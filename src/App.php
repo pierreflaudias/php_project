@@ -12,7 +12,7 @@ class App
     /**
      * @var array
      */
-    private $routes = array();
+    private $routes = [];
 
     /**
      * @var TemplateEngineInterface
@@ -25,7 +25,7 @@ class App
     private $debug;
 
     /**
-     * @var statusCode
+     * @var int
      */
     private $statusCode;
 
@@ -104,6 +104,17 @@ class App
         return $this;
     }
 
+    /**
+     * @param string $to
+     * @param int $statusCode
+     */
+    public function redirect($to, $statusCode = 302)
+    {
+        http_response_code($statusCode);
+        header(sprintf('Location: %s', $to));
+        exit;
+    }
+
     public function run(Request $request = null)
     {
         if($request == null){
@@ -121,6 +132,7 @@ class App
     }
 
     /**
+     * @param Request $request
      * @param Route $route
      */
     private function process(Request $request, Route $route)

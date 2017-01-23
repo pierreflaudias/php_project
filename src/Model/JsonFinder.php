@@ -1,5 +1,4 @@
 <?php
-use \Model\FinderInterface;
 
 namespace Model;
 
@@ -10,11 +9,12 @@ class JsonFinder implements FinderInterface{
 	}
 	
 	public function findOneById($id){
-		return json_decode(file_get_contents(__DIR__ . '../../../data/statuses.json'))[$id];
-	}
-	
-	public function create($message)
-	{
-		
+	    $statuses = json_decode(file_get_contents(__DIR__ . '../../../data/statuses.json'));
+		foreach ($statuses as $status){
+		    if($status->id == $id){
+		        return $status;
+            }
+        }
+        return null;
 	}
 }

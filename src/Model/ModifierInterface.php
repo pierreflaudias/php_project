@@ -2,7 +2,7 @@
 
 namespace Model;
 
-interface WriterInterface
+interface ModifierInterface
 {
     /**
      * Write an element.
