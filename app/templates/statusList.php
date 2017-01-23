@@ -10,6 +10,6 @@ foreach ($statuses as $status) {
 
     <label for="message">Message:</label>
     <textarea name="message"></textarea>
-
+	<input type="hidden" name="_method" value="POST">
     <input type="submit" value="Tweet!">
 </form>

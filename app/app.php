@@ -3,6 +3,7 @@
 require __DIR__ . '/../autoload.php';
 
 use Model\JsonFinder;
+use Model\JsonWriter;
 use Http\Request;
 use Exception\HttpException;
 
@@ -33,8 +34,8 @@ $app->get('/statuses/(\d+)', function(Request $request, $id) use ($app) {
 });
 
 $app->post('/statuses', function () use ($app) {
-	$finder = new JsonFinder();
-	$finder->create();
+	$finder = new JsonWriter();
+	$finder->write("coucou");
     return ;
 });
 

@@ -17,7 +17,7 @@ class Request
 
     public function __construct(array $query = array(), array $request = array())
     {
-    	$parameters = array_merge($query, $request);
+    	$this->parameters = array_merge($query, $request);
     }
 
     public static function createFromGlobals()
@@ -46,6 +46,6 @@ class Request
 
 	public function getParameter($name, $default = null)
 	{
-		return $parameters[$name];
+		return $this->parameters[$name];
 	}
 }
