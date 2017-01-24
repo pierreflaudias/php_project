@@ -50,6 +50,14 @@ class Request
 	}
 
 	public function guessBestFormat(){
+		$negotiator = new \Negotiation\Negotiator();
 
+		$acceptHeader = 'text/html, application/json';
+		$priorities   = array('text/html; charset=UTF-8', 'application/json');
+
+		$mediaType = $negotiator->getBest($acceptHeader, $priorities);
+
+		return $mediaType->getValue();
+		// $value == 'text/html; charset=UTF-8'
     }
 }
