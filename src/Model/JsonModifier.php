@@ -12,6 +12,7 @@ class JsonModifier implements ModifierInterface
     {
         $finder = new JsonFinder();
         $statuses = $finder->findAll();
+        var_dump($statuses);
         $ids = array_map(function ($status) {
             return $status->id;
         }, $statuses);
@@ -20,7 +21,7 @@ class JsonModifier implements ModifierInterface
             $id = rand(1, 10000);
         }
         $status = ["id" => $id, "message" => $message];
-        $statuses[] = (object)$status;
+        $statuses[] = $status;
         file_put_contents(__DIR__ . '../../../data/statuses.json', json_encode($statuses));
     }
 
@@ -31,7 +32,7 @@ class JsonModifier implements ModifierInterface
     {
         $finder = new JsonFinder();
         $statuses = $finder->findAll();
-        if (($key = array_search($id, array_column($statuses, 'id'))) !== false) {
+        if (($key = array_search($id, array_map(function($status) { return $status->id; }, $statuses))) !== false) {
             unset($statuses[$key]);
         }
         file_put_contents(__DIR__ . '../../../data/statuses.json', json_encode($statuses));

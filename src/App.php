@@ -5,6 +5,7 @@ use Exception\HttpException;
 use Routing\Route;
 use View\TemplateEngineInterface;
 use Http\Request;
+use Http\Response;
 
 class App
 {
@@ -125,7 +126,7 @@ class App
 
         foreach ($this->routes as $route) {
             if ($route->match($method, $uri)) {
-                return $this->process($request, $route);
+                return $this->process($request, null, $route);
             }
         }
         throw new HttpException(404, 'Page Not Found');
@@ -135,15 +136,22 @@ class App
      * @param Request $request
      * @param Route $route
      */
-    private function process(Request $request, Route $route)
+    private function process(Request $request, Response $response = null, Route $route)
     {
         try {
-            http_response_code($this->statusCode);
-            
-            $arguments = $route->getArguments();
-            array_unshift($arguments, $request);
-            
-            echo call_user_func_array($route->getCallable(), $arguments);
+
+
+                $arguments = $route->getArguments();
+                array_unshift($arguments, $response);
+                array_unshift($arguments, $request);
+            if($response == null){
+                $content = call_user_func_array($route->getCallable(), $arguments);
+                http_response_code($this->statusCode);     
+                echo $content;
+            } else {
+                $response->send();
+            }
+
         } catch (HttpException $e) {
             throw $e;
         } catch (\Exception $e) {
