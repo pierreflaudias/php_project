@@ -37,6 +37,7 @@ class Request
     {
     	$method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : self::GET;
     	if(self::POST === $method){
+            //TODO post avec CURL et J§ON
     		return $this->getParameter('_method', $method);
     	}
     	return $method;
@@ -61,14 +62,14 @@ class Request
 		$negotiator = new \Negotiation\Negotiator();
         
         if(isset($_SERVER['HTTP_ACCEPT'])){
-
-    		$acceptHeader = 'text/html, application/json, application/x-www-form-urlencoded';
-    		$priorities   = array('text/html; charset=UTF-8', 'application/json', 'application/x-www-form-urlencoded');
+            $acceptHeader = $_SERVER['HTTP_ACCEPT'];
+        } else {
+            $acceptHeader = 'text/html, application/json, application/x-www-form-urlencoded';
         }
 
+        $priorities   = array('text/html; charset=UTF-8', 'application/json', 'application/x-www-form-urlencoded');
 		$mediaType = $negotiator->getBest($acceptHeader, $priorities);
 
 		return $mediaType->getType();
-		// $value == 'text/html; charset=UTF-8'
     }
 }

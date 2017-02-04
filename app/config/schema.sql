@@ -1,0 +1,1 @@
+CREATE TABLE statuses IF NOT EXISTS

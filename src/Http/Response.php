@@ -30,7 +30,6 @@ class Response
     public function sendHeaders()
     {
         http_response_code($this->statusCode);
-
         foreach ($this->headers as $name => $value) {
             header(sprintf('%s: %s', $name, $value));
         }
