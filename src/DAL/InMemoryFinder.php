@@ -1,6 +1,6 @@
 <?php
 
-namespace Model;
+namespace DAL;
 
 class InMemoryFinder implements FinderInterface{
 	

@@ -1,6 +1,8 @@
 <?php
 
-namespace Model;
+use DAL\FinderInterface;
+
+namespace DAL\Json;
 
 class JsonFinder implements FinderInterface{
 	

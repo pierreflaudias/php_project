@@ -1,6 +1,8 @@
 <?php
 
-namespace Model;
+use DAL\ModifierInterface;
+
+namespace DAL\Json;
 
 class JsonModifier implements ModifierInterface
 {

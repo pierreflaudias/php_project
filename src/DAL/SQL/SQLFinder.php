@@ -1,8 +1,7 @@
 <?php
 
-/**
-* 
-*/
+namespace DAL\SQL;
+
 class SQLFinder extends FinderInterface
 {
 	

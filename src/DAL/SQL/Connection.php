@@ -1,5 +1,7 @@
 <?php
 
+namespace DAL\SQL;
+
 class Connection extends PDO
 {
     /**

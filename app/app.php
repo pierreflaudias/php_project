@@ -2,13 +2,13 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Model\JsonFinder;
-use Model\JsonModifier;
+use DAL\Json\JsonFinder;
+use DAL\Json\JsonModifier;
 use Http\Request;
 use Http\JsonResponse;
 use Http\Response;
 use Exception\HttpException;
-use Model\Connection;
+//use DAL\SQL\Connection;
 
 // Config
 $debug = true;
@@ -28,7 +28,7 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES => false,
 ];
 
-$con = new Connection($dsn, $user, $password, $options);
+//$con = new Connection($dsn, $user, $password, $options);
 
 
 /**
