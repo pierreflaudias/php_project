@@ -55,7 +55,10 @@ class Request
 
 	public function getParameter($name, $default = null)
 	{
-		return $this->parameters[$name];
+        if (array_key_exists($name, $this->parameters)) {
+		  return $this->parameters[$name];
+        }
+        return $default;
 	}
 
 	public function guessBestFormat(){

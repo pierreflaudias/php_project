@@ -9,8 +9,10 @@
 			<h1>Tweets</h1>
 			<table class="table table-bordered table-hover">
 				<?php
-				foreach ($statuses as $status) {?>
-				    <tr><td><a href="/statuses/<?= $status->id ?>">Tweet <?= $status->id ?></a> : <?= $status->message ?></td></tr>
+
+				foreach ($statuses as $status) {
+    var_dump($status);?>
+				    <tr><td><a href="/statuses/<?= $status->getId() ?>">Tweet <?= $status->getId() ?></a> : <?= $status->getContent() ?></td><small><?= $status->getCreatedAt() ?></small></tr>
 				<?php
 				}
 				?>

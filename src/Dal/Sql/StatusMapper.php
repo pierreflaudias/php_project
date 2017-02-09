@@ -2,7 +2,7 @@
 
 use Connection;
 
-namespace DAL\SQL;
+namespace Dal\Sql;
 
 class StatusMapper
 {

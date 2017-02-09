@@ -2,13 +2,14 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use DAL\Json\JsonFinder;
-use DAL\Json\JsonModifier;
+use Dal\Json\JsonFinder;
+use Dal\Json\JsonModifier;
 use Http\Request;
 use Http\JsonResponse;
 use Http\Response;
 use Exception\HttpException;
-//use DAL\SQL\Connection;
+use Dal\Sql\Connection;
+use Dal\Sql\SQLFinder;
 
 // Config
 $debug = true;
@@ -17,7 +18,7 @@ $app = new \App(new View\TemplateEngine(
     __DIR__ . '/templates/'
 ), $debug);
 
-$dsn = 'mysql:host=localhost;dbname=uframework';
+$dsn = 'mysql:host=127.0.0.1;port=32768;dbname=uframework';
 
 $user = "uframework";
 $password = "p4ssw0rd";
@@ -28,14 +29,14 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES => false,
 ];
 
-//$con = new Connection($dsn, $user, $password, $options);
+$con = new Connection($dsn, $user, $password, $options);
 
 
 /**
  * Index
  */
-$app->get('/statuses', function (Request $request) use ($app) {
-	$finder = new JsonFinder();
+$app->get('/statuses', function (Request $request) use ($app, $con) {
+	$finder = new SQLFinder($con);
 	$statuses = $finder->findAll();
     if($request->guessBestFormat() == 'text/html'){
         return new Response($app->render('statusList.php', ["statuses" => $statuses]));
@@ -45,7 +46,7 @@ $app->get('/statuses', function (Request $request) use ($app) {
     }
 });
 
-$app->get('/statuses/(\d+)', function(Request $request, $id) use ($app) {
+$app->get('/statuses/(\d+)', function(Request $request, $id) use ($app, $con) {
 
 	$finder = new JsonFinder();
 	$status = $finder->findOneById($id);
@@ -56,13 +57,13 @@ $app->get('/statuses/(\d+)', function(Request $request, $id) use ($app) {
 	
 });
 
-$app->post('/statuses', function (Request $request) use ($app) {
+$app->post('/statuses', function (Request $request) use ($app, $con) {
 	$writer = new JsonModifier();
 	$writer->write($request->getParameter("message"));
     $app->redirect('/statuses', 201);
 });
 
-$app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app) {
+$app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $con) {
     $finder = new JsonFinder();
     $status = $finder->findOneById($id);
     if($status == null) {

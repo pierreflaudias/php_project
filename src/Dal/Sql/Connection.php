@@ -1,8 +1,8 @@
 <?php
 
-namespace DAL\SQL;
+namespace Dal\Sql;
 
-class Connection extends PDO
+class Connection extends \PDO
 {
     /**
      * @param string $query
