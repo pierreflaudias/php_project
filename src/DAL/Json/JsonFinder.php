@@ -1,17 +1,15 @@
 <?php
 
-use DAL\FinderInterface;
-
 namespace DAL\Json;
 
-class JsonFinder implements FinderInterface{
+class JsonFinder implements \DAL\FinderInterface{
 	
 	public function findAll(){
-		return json_decode(file_get_contents(__DIR__ . '../../../data/statuses.json'));
+		return json_decode(file_get_contents(__DIR__ . '../../../../data/statuses.json'));
 	}
 	
 	public function findOneById($id){
-	    $statuses = json_decode(file_get_contents(__DIR__ . '../../../data/statuses.json'));
+	    $statuses = json_decode(file_get_contents(__DIR__ . '../../../../data/statuses.json'));
 		foreach ($statuses as $status){
 		    if($status->id == $id){
 		        return $status;

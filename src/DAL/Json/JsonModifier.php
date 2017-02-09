@@ -1,10 +1,8 @@
 <?php
 
-use DAL\ModifierInterface;
-
 namespace DAL\Json;
 
-class JsonModifier implements ModifierInterface
+class JsonModifier implements \DAL\ModifierInterface
 {
 
     /**
@@ -23,7 +21,7 @@ class JsonModifier implements ModifierInterface
         }
         $status = ["id" => $id, "message" => $message];
         $statuses[] = $status;
-        file_put_contents(__DIR__ . '../../../data/statuses.json', json_encode($statuses, JSON_PRETTY_PRINT));
+        file_put_contents(__DIR__ . '../../../../data/statuses.json', json_encode($statuses, JSON_PRETTY_PRINT));
     }
 
     /**
@@ -36,6 +34,6 @@ class JsonModifier implements ModifierInterface
         if (($key = array_search($id, array_map(function($status) { return $status->id; }, $statuses))) !== false) {
             unset($statuses[$key]);
         }
-        file_put_contents(__DIR__ . '../../../data/statuses.json', json_encode($statuses, JSON_PRETTY_PRINT));
+        file_put_contents(__DIR__ . '../../../../data/statuses.json', json_encode($statuses, JSON_PRETTY_PRINT));
     }
 }
