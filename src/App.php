@@ -2,13 +2,13 @@
 
 use Exception\ExceptionHandler;
 use Exception\HttpException;
+use Http\Request;
 use Routing\Route;
 use View\TemplateEngineInterface;
-use Http\Request;
-use Http\Response;
 
 class App
 {
+    use EventDispatcher\EventDispatcherTrait;
 
     /**
      * @var array
@@ -33,7 +33,7 @@ class App
     public function __construct(TemplateEngineInterface $templateEngine, $debug = false)
     {
         $this->templateEngine = $templateEngine;
-        $this->debug          = $debug;
+        $this->debug = $debug;
 
         $exceptionHandler = new ExceptionHandler($templateEngine, $this->debug);
         set_exception_handler(array($exceptionHandler, 'handle'));
@@ -41,8 +41,8 @@ class App
 
     /**
      * @param string $template
-     * @param array  $parameters
-     * @param int    $statusCode
+     * @param array $parameters
+     * @param int $statusCode
      *
      * @return string
      */
@@ -54,7 +54,7 @@ class App
     }
 
     /**
-     * @param string   $pattern
+     * @param string $pattern
      * @param callable $callable
      *
      * @return App
@@ -67,7 +67,18 @@ class App
     }
 
     /**
-     * @param string   $pattern
+     * @param string $method
+     * @param string $pattern
+     * @param callable $callable
+     */
+    private function registerRoute($method, $pattern, $callable)
+    {
+        $route = new Route($method, $pattern, $callable);
+        $this->routes[] = $route;
+    }
+
+    /**
+     * @param string $pattern
      * @param callable $callable
      *
      * @return App
@@ -78,9 +89,9 @@ class App
 
         return $this;
     }
-    
+
     /**
-     * @param string   $pattern
+     * @param string $pattern
      * @param callable $callable
      *
      * @return App
@@ -91,9 +102,9 @@ class App
 
         return $this;
     }
-    
+
     /**
-     * @param string   $pattern
+     * @param string $pattern
      * @param callable $callable
      *
      * @return App
@@ -118,11 +129,11 @@ class App
 
     public function run(Request $request = null)
     {
-        if($request == null){
+        if ($request == null) {
             $request = Request::createFromGlobals();
         }
         $method = $request->getMethod();
-        $uri    = $request->getUri();
+        $uri = $request->getUri();
 
         foreach ($this->routes as $route) {
             if ($route->match($method, $uri)) {
@@ -138,33 +149,23 @@ class App
      */
     private function process(Request $request, Route $route)
     {
+        $this->dispatch('process.before', [$request]);
         try {
-                $arguments = $route->getArguments();
-                array_unshift($arguments, $request);
-                $response = call_user_func_array($route->getCallable(), $arguments);
+            $arguments = $route->getArguments();
+            array_unshift($arguments, $request);
+            $response = call_user_func_array($route->getCallable(), $arguments);
 
-                if(is_string($response)){
-                    http_response_code($this->statusCode);
-                    echo $response;
-                } else {
-                    $response->send();
-                }
+            if (is_string($response)) {
+                http_response_code($this->statusCode);
+                echo $response;
+            } else {
+                $response->send();
+            }
 
         } catch (HttpException $e) {
             throw $e;
         } catch (\Exception $e) {
             throw new HttpException(500, null, $e);
         }
-    }
-
-    /**
-     * @param string   $method
-     * @param string   $pattern
-     * @param callable $callable
-     */
-    private function registerRoute($method, $pattern, $callable)
-    {
-        $route = new Route($method, $pattern, $callable);
-        $this->routes[] = $route;
     }
 }

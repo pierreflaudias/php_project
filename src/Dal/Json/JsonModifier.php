@@ -1,8 +1,8 @@
 <?php
 
-namespace DAL\Json;
+namespace Dal\Json;
 
-class JsonModifier implements \DAL\ModifierInterface
+class JsonModifier implements \Dal\ModifierInterface
 {
 
     /**

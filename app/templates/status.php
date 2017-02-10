@@ -6,9 +6,9 @@
 	</head>
 	<body>
 		<div class="container">
-			<h1>Tweets</h1>
-			<p><?= $status->message; ?></p>
-			<form class="form-horizontal" action="/statuses/<?= $status->id ?>" method="POST">
+			<h1>Tweet <?= $status->getId() ?></h1>
+			<p><?= $status->getContent() ?></p>
+			<form class="form-horizontal" action="/statuses/<?= $status->getId() ?>" method="POST">
 			    <input type="hidden" name="_method" value="DELETE">
 			    <button type="submit" class="btn btn-danger">Delete</button>
 			</form>
