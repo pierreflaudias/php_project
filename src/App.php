@@ -5,7 +5,6 @@ use Exception\HttpException;
 use Routing\Route;
 use View\TemplateEngineInterface;
 use Http\Request;
-use Http\Response;
 
 class App
 {
