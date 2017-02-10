@@ -2,8 +2,8 @@
 
 namespace Dal\Sql;
 
-use Model\Status;
 use Dal\FinderInterface;
+use Model\Status;
 use Model\User;
 
 class StatusFinder implements FinderInterface
@@ -19,14 +19,13 @@ class StatusFinder implements FinderInterface
     public function findAll()
     {
         $statuses = [];
-        $query = "SELECT s.id, s.content, s.date, u.login FROM statuses AS s, users AS u WHERE s.user_id = u.id OR s.user_id IS NULL";
+        $query = "SELECT s.id, s.content, s.date, u.login FROM statuses AS s, users AS u";
         $stmt = $this->connection->prepare($query);
 
         $stmt->execute();
         if ($stmt != false) {
 
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
             if (!empty($results)) {
                 foreach ($results as $row) {
                     $statuses[$row['id']] = new Status($row['id'], $row['content'], new \DateTime($row['date']),
@@ -39,7 +38,7 @@ class StatusFinder implements FinderInterface
 
     public function findOneById($id)
     {
-        $query = "SELECT s.id, s.content, s.date, u.login FROM Statuses AS s, Users AS u WHERE s.id = :id";
+        $query = "SELECT s.id, s.content, s.date, u.login FROM statuses AS s, users AS u WHERE s.id = :id";
         $stmt = $this->connection->prepare($query);
         $stmt->execute([':id' => $id]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);

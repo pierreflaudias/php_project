@@ -25,13 +25,8 @@
     </table>
     <form action="/statuses" method="POST" class="form-horizontal">
         <div class="form-group">
-            <label for="username">Username:
-                <input type="text" name="username" class="form-control" required>
-            </label>
-        </div>
-        <div class="form-group">
-            <label for="message">Message :</label>
-            <textarea name="message" class="form-control" required></textarea>
+            <label for="content">Content :</label>
+            <textarea name="content" class="form-control" required></textarea>
         </div>
         <input type="hidden" name="_method" value="POST">
         <button class="btn btn-info" type="submit">Tweet !</button>

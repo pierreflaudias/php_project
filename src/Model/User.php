@@ -8,7 +8,7 @@ class User
     private $login;
     private $password;
 
-    function __construct($id, $login, $password)
+    function __construct($id = null, $login, $password)
     {
         $this->id = $id;
         $this->login = $login;
@@ -18,6 +18,11 @@ class User
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     public function getLogin()

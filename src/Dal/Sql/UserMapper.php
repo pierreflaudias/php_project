@@ -16,19 +16,19 @@ class UserMapper
 
     public function persist(User $user)
     {
-        $parameters = array('id' => $user->getId(),
+        $parameters = array(
             'login' => $user->getLogin(),
             'password'=> $user->getPassword()
         );
 
-        $query = "INSERT INTO user(id,login,password) values(:id,:login,:password)";
+        $query = "INSERT INTO users(login, password) values(:login, :password)";
 
         return $this->connection->executeQuery($query, $parameters);
     }
 
     public function remove(User $user)
     {
-        $query = "DELETE FROM user WHERE id=:id";
+        $query = "DELETE FROM users WHERE id=:id";
         return $this->connection->executeQuery($query,  ["id" => $user->getId()]);
     }
 }

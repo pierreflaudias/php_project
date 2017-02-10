@@ -23,7 +23,7 @@ class UserFinder
     public function findOneByLogin($login)
     {
         $user = null;
-        $query = "SELECT * FROM Users where login=:login";
+        $query = "SELECT * FROM users where login=:login";
         $stmt = $this->connection->prepare($query);
         $stmt->execute(["login" => $login]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -31,7 +31,6 @@ class UserFinder
         if (!empty($result)) {
             $user = new User($result['id'], $result['login'], $result['password']);
         }
-        var_dump($user);
         return $user;
     }
 }

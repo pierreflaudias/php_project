@@ -59,18 +59,21 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $con) {
 
 $app->post('/statuses', function (Request $request) use ($app, $con) {
     $writer = new Data\StatusMapper($con);
-    $writer->write($request->getParameter("message"));
+    $user_login = isset($_SESSION['user']) ? $_SESSION['user']->getLogin() : null;
+    $status = new \Model\Status(null, $request->getParameter("content"), new DateTime(date('m-d-Y')), $user_login);
+    $status_id = $writer->persist($status);
+    $status->setId($status_id);
     $app->redirect('/statuses', 201);
 });
 
 $app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $con) {
-    $finder = new JsonFinder();
+    $finder = new Data\StatusFinder($con);
     $status = $finder->findOneById($id);
     if ($status == null) {
         throw new HttpException(404, "Status not found");
     }
-    $writer = new JsonModifier();
-    $writer->delete($id);
+    $writer = new Data\StatusMapper($con);
+    $writer->remove($status);
     $app->redirect('/statuses', 204);
 });
 
@@ -83,8 +86,8 @@ $app->post('/signin', function (Request $request) use ($app, $con) {
     $userFinder = new Data\UserFinder($con);
     $login = $request->getParameter('login');
     $password = $request->getParameter('password');
-    //$passwordHash = password_hash($password, PASSWORD_DEFAULT);
-    $user = new Model\User($username, $password, new DateTime(date("Y-m-d H:i:s")));
+    $passwordHash = password_hash($password, PASSWORD_BCRYPT);
+    $user = new Model\User(null, $login, $passwordHash);
     $newUser = $mapper->persist($user);
     if ($newUser) {
         $_SESSION['is_authenticated'] = true;
@@ -106,7 +109,9 @@ $app->post('/login', function (Request $request) use ($app, $con) {
     if (null === $user = $userFinder->findOneByLogin($login)) {
         throw new HttpException(403, "Nom d'utilisateur inexistant");
     }
-    if ($password != $user->getPassword()) {
+    var_dump($user->getPassword());
+    var_dump($password);
+    if (!password_verify($password, $user->getPassword())) {
         throw new HttpException(403, "Mot de passe incorrect");
     }
     $_SESSION['is_authenticated'] = true;
@@ -119,7 +124,7 @@ $app->get('/logout', function (Request $request) use ($app) {
     $app->redirect('/');
 });
 
-$app->addListener('process.before', function (Request $request) {
+$app->addListener('process.before', function (Request $request) use ($app) {
     session_start();
     $allowed = [
         '/login' => [Request::GET, Request::POST],
