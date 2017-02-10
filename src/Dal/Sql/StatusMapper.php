@@ -1,8 +1,10 @@
 <?php
 
-use Connection;
+
 
 namespace Dal\Sql;
+use Dal\Sql\Connection;
+use Model\Status;
 
 class StatusMapper
 {
@@ -15,11 +17,20 @@ class StatusMapper
 
 	public function persist(Status $status)
 	{
-		$this->connection->executeQuery();
+        $parameters = array('id' => $status->getId(),
+                            'content' => $status->getContent(),
+                            'date'=> $status->getCreatedAt(),
+                            'user_id' => $status->getUserLogin()
+            );
+
+        $query = "INSERT INTO statuses(id,content, date, user_id) values(:id,:content,:date,:user_id)";
+
+		return $this->connection->executeQuery($query, $parameters);
 	}
 
 	public function remove(Status $status)
 	{
-		$this->connection->executeQuery();
+		$query = "DELETE FROM statuses WHERE id=:id";
+        return $this->connection->executeQuery($query,  ["id" => $status->getId()]);
 	}
 }

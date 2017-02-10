@@ -2,6 +2,8 @@
 
 namespace Http;
 
+use Negotiation\Negotiator;
+
 class Request
 {
 
@@ -62,7 +64,7 @@ class Request
 	}
 
 	public function guessBestFormat(){
-		$negotiator = new \Negotiation\Negotiator();
+		$negotiator = new Negotiator();
         
         if(isset($_SERVER['HTTP_ACCEPT'])){
             $acceptHeader = $_SERVER['HTTP_ACCEPT'];

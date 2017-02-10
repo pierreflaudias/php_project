@@ -28,8 +28,8 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES => false,
 ];
 
-//$con = new Connection($dsn, $user, $password, $options);
-$con = new Data\Connection('sqlite:/tmp/uframework.db');
+$con = new Data\Connection($dsn, $user, $password, $options);
+//$con = new Data\Connection('sqlite:/tmp/uframework.db');
 
 $app->get('/', function () use ($app) {
     $app->redirect('/statuses');
@@ -58,7 +58,7 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $con) {
 });
 
 $app->post('/statuses', function (Request $request) use ($app, $con) {
-    $writer = new JsonModifier();
+    $writer = new Data\StatusMapper($con);
     $writer->write($request->getParameter("message"));
     $app->redirect('/statuses', 201);
 });
