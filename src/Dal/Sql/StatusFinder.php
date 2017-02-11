@@ -16,15 +16,22 @@ class StatusFinder implements FinderInterface
         $this->connection = $connection;
     }
 
-    public function findAll()
+    /**
+     * Get all statuses from database
+     *
+     * @param mixed $criteria
+     * @return array(Status)
+     */
+    public function findAll($criteria = [])
     {
         $statuses = [];
-        $query = "SELECT s.id, s.content, s.date, u.login FROM statuses AS s, users AS u";
+        $query = "SELECT s.id, s.content, s.date, u.login FROM statuses s LEFT JOIN users u ON s.user_id = u.id ";
+        foreach ($criteria as $criterion => $value) {
+            $query .= strtoupper($criterion) . " " . $value . " ";
+        }
         $stmt = $this->connection->prepare($query);
-
         $stmt->execute();
         if ($stmt != false) {
-
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             if (!empty($results)) {
                 foreach ($results as $row) {
@@ -36,6 +43,12 @@ class StatusFinder implements FinderInterface
         return $statuses;
     }
 
+    /**
+     * Get one status by its id in database
+     *
+     * @param mixed $id
+     * @return Status
+     */
     public function findOneById($id)
     {
         $query = "SELECT s.id, s.content, s.date, u.login FROM statuses AS s, users AS u WHERE s.id = :id";
@@ -47,20 +60,33 @@ class StatusFinder implements FinderInterface
         }
     }
 
-    public function findAllByUser(User $user)
+    public function findAllByUser(User $user, $criteria = [])
     {
 
     }
 
-    private function __call($name, $arguments)
+    /**
+     * @param $name
+     * @param $arguments
+     * @return array(Status)
+     */
+    public function __call($name, $arguments)
     {
-        if (preg_match("#^find#i", $name)) {
-            $findQuantity = str_replace("find", "", $name);
-            if (preg_match("#^One#i", $findQuantity)) {
-                //$findConditions =
-            } elseif (preg_match("#^All#i", $findQuantity)) {
+        $criteria = [];
+        if (preg_match("#^findAll#i", $name)) {
+            $match = str_replace("findAll", "", $name);
+            if (preg_match("#^ByUser#i", $match)) {
+                $match = str_replace("ByUser", "", $match);
+                $call = "findAllByUser";
 
+            } else {
+                $call = "findAll";
             }
+            $findConditions = explode("And", $match);
+            foreach ($findConditions as $condition) {
+                $criteria[strtolower(preg_replace('/(\w+)([A-Z])/U', '\\1 \\2', $condition))] =  array_shift($arguments);
+            }
+            return $this->$call($criteria);
         }
     }
 

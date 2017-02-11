@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Twitter</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container">
+    <?php if ($_SESSION['is_authenticated']){
+        ?>
+        <div class="row">
+            <div class="col-xs-10"></div>
+            <div class="col-xs-2">
+                <a class="btn btn-info" href="/logout">Logout</a>
+            </div>
+        </div>
+    <?php } else { ?>
+    <div class="row">
+        <div class="col-xs-10"></div>
+        <div class="col-xs-2">
+            <a class="btn btn-info" href="/login">Login</a>
+            <a class="btn btn-info" href="/signin">Signin</a>
+        </div>
+    </div>
+<?php }

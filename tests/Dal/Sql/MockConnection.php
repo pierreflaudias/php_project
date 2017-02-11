@@ -1,9 +1,6 @@
 <?php
 
-namespace DataMapper;
-
-
-use Dal\Sql\Connection;
+namespace Dal\Sql;
 
 class MockConnection extends Connection
 {

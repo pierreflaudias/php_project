@@ -124,7 +124,7 @@ class App
     {
         http_response_code($statusCode);
         header(sprintf('Location: %s', $to));
-        exit;
+        die;
     }
 
     public function run(Request $request = null)

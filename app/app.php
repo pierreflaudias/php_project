@@ -32,12 +32,22 @@ $con = new Data\Connection($dsn, $user, $password, $options);
 //$con = new Data\Connection('sqlite:/tmp/uframework.db');
 
 $app->get('/', function () use ($app) {
-    $app->redirect('/statuses');
+    return $app->redirect('/statuses');
 });
 
 $app->get('/statuses', function (Request $request) use ($app, $con) {
     $finder = new Data\StatusFinder($con);
-    $statuses = $finder->findAll();
+    $filter = "";
+    $criteria = [];
+    foreach ($request->getParameters() as $parameter => $value) {
+        $filter .= ucfirst($parameter) . "And";
+        if ($parameter == "limit") {
+            $criteria[] = "0, " . $value;
+        } else {
+            $criteria[] = $value;
+        }
+    }
+    $statuses = $finder->{"findAll" . preg_replace("/And$/", "", $filter)}(...$criteria);
     if ($request->guessBestFormat() == 'text/html') {
         return new Response($app->render('statusList.php', ["statuses" => $statuses]));
     }
@@ -57,13 +67,21 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $con) {
 
 });
 
+
+//$app->get('/mystatuses', function(Request $request) use ($app, $serialize, $connection) {
+//    $statuses = new Data\StatusFinder($connection);
+//    $limit = $request->getParameter('limit', FinderInterface::LIMIT);
+//    $offset = $request->getParameter('offset', FinderInterface::OFFSET);
+//    return $serialize($request, ['statuses' => $statuses->findAllByUserId($_SESSION['user']->getId() ,$limit, $offset) ], 'myStatuses.php');
+//});
+
 $app->post('/statuses', function (Request $request) use ($app, $con) {
     $writer = new Data\StatusMapper($con);
     $user_login = isset($_SESSION['user']) ? $_SESSION['user']->getLogin() : null;
     $status = new \Model\Status(null, $request->getParameter("content"), new DateTime(date('m-d-Y')), $user_login);
     $status_id = $writer->persist($status);
     $status->setId($status_id);
-    $app->redirect('/statuses', 201);
+    return $app->redirect('/statuses', 201);
 });
 
 $app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $con) {
@@ -74,7 +92,7 @@ $app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $con
     }
     $writer = new Data\StatusMapper($con);
     $writer->remove($status);
-    $app->redirect('/statuses', 204);
+    return $app->redirect('/statuses', 204);
 });
 
 $app->get('/signin', function (Request $request) use ($app) {
@@ -92,7 +110,7 @@ $app->post('/signin', function (Request $request) use ($app, $con) {
     if ($newUser) {
         $_SESSION['is_authenticated'] = true;
         $_SESSION['user'] = $userFinder->findOneByLogin($login);
-        return $app->redirect('/');
+        $app->redirect('/');
     }
     throw new Exception\HttpException(400, "Utilisateur deja existant");
 });
@@ -121,7 +139,7 @@ $app->post('/login', function (Request $request) use ($app, $con) {
 
 $app->get('/logout', function (Request $request) use ($app) {
     session_destroy();
-    $app->redirect('/');
+    return $app->redirect('/');
 });
 
 $app->addListener('process.before', function (Request $request) use ($app) {
@@ -129,6 +147,7 @@ $app->addListener('process.before', function (Request $request) use ($app) {
     $allowed = [
         '/login' => [Request::GET, Request::POST],
         '/logout' => [Request::GET, Request::POST],
+        '/signin' => [Request::GET, Request::POST],
         '/statuses' => [Request::GET, Request::POST],
         '/statuses/(\d+)' => [Request::GET, Request::POST],
         '/' => [Request::GET],

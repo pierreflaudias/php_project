@@ -14,7 +14,7 @@ class Status
         $this->id = $id;
         $this->content = $content;
         $this->created_at = $created_at;
-        $this->user_login = $user_login;
+        $this->user_login = ($user_login == null) ? "Anonymous user" : $user_login;
     }
 
     public function getId()

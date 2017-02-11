@@ -1,17 +1,10 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Twitter</title>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-	</head>
-	<body>
-		<div class="container">
-			<h1>Tweet <?= $status->getId() ?></h1>
-			<p><?= $status->getContent() ?></p>
-			<form class="form-horizontal" action="/statuses/<?= $status->getId() ?>" method="POST">
-			    <input type="hidden" name="_method" value="DELETE">
-			    <button type="submit" class="btn btn-danger">Delete</button>
-			</form>
-		</div>
-	</body>
+<?php include_once 'header.php'; ?>
+    <h1>Tweet <?= $status->getId() ?></h1>
+    <p><?= $status->getContent() ?></p>
+    <form class="form-horizontal" action="/statuses/<?= $status->getId() ?>" method="POST">
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+</div>
+</body>
 </html>
